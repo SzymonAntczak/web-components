@@ -1,27 +1,8 @@
 (() => {
-  const style = `
+  const style = /* html */ `
     <style>
       section {
-        position: relative;
         padding: 1rem;
-      }
-
-      #container {
-        margin-bottom: 1rem;
-      }
-
-      #loading {
-        position: absolute;
-        inset: 0;
-        background: rgba(255, 255, 255, 0.8);
-        text-align: center;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-
-      #error {
-        color: red;
       }
 
       ul {
@@ -37,9 +18,10 @@
         margin: 0.5rem 0;
       }
 
-      button {
+      app-button {
+        margin: 0 auto;
         display: block;
-        margin: 1rem auto 0;
+        width: fit-content;
       }
     </style>
   `;
@@ -53,32 +35,29 @@
       super();
       this.attachShadow({ mode: "open" });
 
-      this.shadowRoot.innerHTML = `
+      this.shadowRoot.innerHTML = /* html */ `
         ${style}
 
         <section></section>
+        <app-button loading=${this.#isLoading}>Load more</button>
       `;
 
-      this.fetchData();
+      this.#fetchData();
+
+      this.shadowRoot
+        .querySelector("app-button")
+        .addEventListener("click", () => {
+          this.#fetchData();
+        });
     }
 
     #render() {
-      const section = this.shadowRoot.querySelector("section");
-      const existingLoader = this.shadowRoot.querySelector("app-loader");
-  
-      if (this.#isLoading) {
-        if (!existingLoader) {
-          const loader = document.createElement("app-loader");
-          section.appendChild(loader);
-        }
-      } else {
-        if (existingLoader) {
-          existingLoader.remove();
-        }
-      }
+      this.shadowRoot
+        .querySelector("app-button")
+        .setAttribute("loading", `${this.#isLoading}`);
 
-      if (this.#data.length <= 0) return; 
-      
+      if (this.#data.length <= 0) return;
+
       const existingList = this.shadowRoot.querySelector("ul");
 
       if (!existingList) {
@@ -90,7 +69,7 @@
           list.appendChild(li);
         });
 
-        section.appendChild(list);
+        this.shadowRoot.querySelector("section").appendChild(list);
         return;
       }
 
@@ -103,7 +82,7 @@
       }
     }
 
-    async fetchData() {
+    async #fetchData() {
       this.#page++;
       this.#isLoading = true;
       this.#render();
@@ -115,10 +94,11 @@
             : `https://swapi.dev/api/peopl?page=${this.#page}`
         );
 
-        if (!response.ok) throw new Error("Error while fetching data");
+        if (!response.ok) throw new Error();
 
         const data = await response.json();
-        this.#data = [...this.#data, ...data.results];
+
+        this.#data.push(...data.results);
         this.#isLoading = false;
         this.#render();
       } catch (e) {

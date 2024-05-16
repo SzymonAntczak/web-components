@@ -1,5 +1,5 @@
 (() => {
-  const style = `
+  const style = /* html */ `
     <style>
       :host {
         position: fixed;
@@ -38,7 +38,7 @@
       super();
       this.attachShadow({ mode: "open" });
 
-      this.shadowRoot.innerHTML = `
+      this.shadowRoot.innerHTML = /* html */ `
         ${style}
 
         <div id="container"></div>
@@ -46,9 +46,7 @@
     }
 
     render(message) {
-      const isOpen = this.hasAttribute("opened");
-
-      if (!isOpen) {
+      if (!this.hasAttribute("opened")) {
         this.setAttribute("opened", "");
       }
 
@@ -56,6 +54,7 @@
       notification.innerHTML = `<span>${message}</span>`;
 
       const container = this.shadowRoot.querySelector("#container");
+
       container.appendChild(notification);
 
       setTimeout(() => {
