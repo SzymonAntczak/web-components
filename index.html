@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Web components</title>
+    <script src="main.js" defer></script>
+    <script src="components/Loader.js" defer></script>
+    <script src="components/List.js" defer></script>
+    <script src="components/Notifications.js" defer></script>
+
+    <style>
+      * {
+        box-sizing: border-box;
+        font: 16px Arial, sans-serif;
+      }
+
+      button {
+        display: block;
+        margin: 1rem auto 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <app-list></app-list>
+    <button id="load-more-btn">Load more</button>
+
+    <app-notifications></app-notifications>
+  </body>
+</html>
